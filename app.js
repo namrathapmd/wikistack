@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const { db, Page, User } = require('./models')
 
 const views = require('./views/main')
 const { urlencoded } = require('express');
@@ -16,15 +17,26 @@ app.use(urlencoded({
   extended: false
 }))
 
-
+db.authenticate()
+  .then(() => {
+    console.log('connected to the database');
+  })
 
 app.get('/', (req, res, next)=>{
 console.log('hello world');
 res.send(views())
-
 })
 
 
-app.listen(PORT, ()=>{
-  console.log(`listening on PORT ${PORT}`)
-})
+const init = async () => {
+  try {
+    await Page.sync();
+    await User.sync();
+    // make sure that you have a PORT constant
+    app.listen(PORT, () => {
+      console.log(`Server is listening on port ${PORT}!`);
+    }); 
+  }
+  catch(error) {console.log(error)}
+}
+init();
