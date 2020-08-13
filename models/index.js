@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
-const db = new Sequelize('postgres://localhost:5432/wikistack', {
+//I needed to update this string to allow connnection.
+const db = new Sequelize('postgres://postgres:@localhost:5432/wikistack', {
     logging: false
 })
 
