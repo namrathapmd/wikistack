@@ -1,38 +1,38 @@
 const express = require('express');
 const morgan = require('morgan');
-const { db, Page, User } = require('./models')
-const wikiRoute = require('./routes/wiki');
-const views = require('./views/main')
-const { urlencoded } = require('express');
-//don't forget to an app instance of express.
-const app = express();
-const PORT = 3000;
-app.use(morgan('dev'));
-//we are service the public folder.
-app.use(express.static(__dirname + "/public"));
-app.use('/wiki', wikiRoute);
+const bodyParser = require('body-parser');
+const path = require('path')
 
-//if there is an issue with req.body check here.
-app.use(urlencoded({
-  extended: false
-}))
+const { db, Page, User } = require('./models');
+const wikiRouter = require('./routes/wiki');
+const userRouter = require('./routes/users')
 
-db.authenticate()
-  .then(() => {
-    console.log('connected to the database');
-  })
+const main = require('./views/main');
 
-app.get('/', (req, res, next)=>{
+const app = express(); //creates an express app
+
+//middleware
+app.use(morgan('dev')); //logging middleware
+app.use(express.static(path.join(__dirname + "./public"))); //serves static files in public folder
+app.use(bodyParser.urlencoded({extended: false})); //helps in parsing req.body
+app.use(bodyParser.json()); 
+
+app.use('/wiki', wikiRouter); //any request under /wiki, use the wiki.js
+app.use('/user', userRouter); //any request under /user use the users.js
+
+//redirect requests coming into localhost 3000 to /wiki
+app.get('/', (req, res, next)=>{ 
 res.redirect('/wiki');
-res.send(views())
 })
 
 
+const PORT = 3000;
 const init = async () => {
   try {
-    await Page.sync();
-    await User.sync();
-    // make sure that you have a PORT constant
+    //await Page.sync();
+    //await User.sync();
+    await db.sync()
+
     app.listen(PORT, () => {
       console.log(`Server is listening on port ${PORT}!`);
     });
