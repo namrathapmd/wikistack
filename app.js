@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: false})); //helps in parsing req.body
 app.use(bodyParser.json()); 
 
 app.use('/wiki', wikiRouter); //any request under /wiki, use the wiki.js
-app.use('/user', userRouter); //any request under /user use the users.js
+app.use('/users', userRouter); //any request under /user use the users.js
 
 //redirect requests coming into localhost 3000 to /wiki
 app.get('/', (req, res, next)=>{ 

@@ -54,6 +54,11 @@ const User = db.define('user', {
     }
 })
 
+//establishing a relationship between the tables
+Page.belongsTo(User, {as: 'author'})
+
+User.hasMany(Page)
+
 module.exports = {
     db, Page, User
 }

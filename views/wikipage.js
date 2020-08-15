@@ -2,6 +2,7 @@ const html = require("html-template-tag");
 const layout = require("./layout");
 
 module.exports = (page, author) => layout(html`
+  <h3>adding this line coz the nav bar was overlapping the page_title</h3>
   <h3>${page.title}
       <small> (<a href="/wiki/${page.slug}/similar">Similar</a>)</small>
   </h3>
@@ -12,3 +13,4 @@ module.exports = (page, author) => layout(html`
   <a href="/wiki/${page.slug}/edit" class="btn btn-primary">edit this page</a>
   <a href="/wiki/${page.slug}/delete" class="btn btn-danger">delete this page</a>
 `);
+

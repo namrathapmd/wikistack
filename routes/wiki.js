@@ -5,8 +5,14 @@ const { addPage, editPage, main, userList, userPages, wikiPage } = require('../v
 
 
 //localhost:3000/wiki/
-router.get('/', (req, res, next) => {
-  res.send('this is the wiki homepage')
+router.get('/', async (req, res, next) => {
+  try {
+    const allpages = await Page.findAll()
+    console.log(allpages)
+    res.send(main(allpages))
+  } catch (error) {
+      console.log(error)
+  }
 })
 
 
@@ -22,10 +28,20 @@ router.post('/', async (req, res, next) => {
 //----------------------------------
 // creates new instance of Page (a new row in Page table) 
 // with the above input in the respective columns
-  const page = new Page(req.body) 
    try {
-      await page.save()
-      res.redirect('/')
+      const [user, wasCreated] = await User.findOrCreate({
+        where: {
+          name: req.body.name,
+          email: req.body.email
+        }
+      })
+
+      const page = new Page(req.body)
+      await page.save()  //save the page
+      //after the page is saved, connect the page to the user by setting the page's authorid
+      await page.setAuthor(user)  
+      
+      res.redirect(`/wiki/${page.slug}`)
    } catch (error) { next(error) }
 })
 
@@ -43,7 +59,6 @@ router.get('/:slug', async(req,res,next)=>{
         slug: req.params.slug
       }
     })
-    //console.log('title------>',page.title)
     res.send(wikiPage(page))
   } catch (error) {next(error)}
 })
