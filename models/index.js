@@ -53,11 +53,17 @@ const User = db.define('user', {
         }
     }
 })
+//HasOne inserts the association key in target model 
+//whereas BelongsTo inserts the association key in the source model.
+//-------------
+//establishing a relationship between the tables (1 to many)
+//source.belongsTo(target)-----> the foreign key is added on the source
+//referencing the user table as author aliasing
+Page.belongsTo(User, {as: 'author'}) 
 
-//establishing a relationship between the tables
-Page.belongsTo(User, {as: 'author'})
-
-User.hasMany(Page)
+//this will link the two pages on the foreign key author id
+//foreignKey will allow you to set source model key in the through relation.
+User.hasMany(Page, {foreignKey: 'authorId'}) 
 
 module.exports = {
     db, Page, User

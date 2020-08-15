@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const path = require('path')
+const methodOverride = require('method-override')
 
 const { db, Page, User } = require('./models');
 const wikiRouter = require('./routes/wiki');
@@ -13,6 +14,7 @@ const app = express(); //creates an express app
 
 //middleware
 app.use(morgan('dev')); //logging middleware
+app.use(methodOverride('_method')); // configure methodOverride to look for '_method'
 app.use(express.static(path.join(__dirname + "./public"))); //serves static files in public folder
 app.use(bodyParser.urlencoded({extended: false})); //helps in parsing req.body
 app.use(bodyParser.json()); 
